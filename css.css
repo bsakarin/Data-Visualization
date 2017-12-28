@@ -1,0 +1,321 @@
+/* Custom */
+
+.circledata {
+	display: none;
+}
+
+.showcircle {
+	display: block;
+}
+
+.squaredata {
+	display: none !important;
+}
+
+.triangledata {
+	display: block !important;
+}
+/* BASIC STYLING */
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+#map,
+#gmap_map {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+
+/*landforms*/
+svg {
+	background-color: rgb(215, 215, 215);
+	width: 100%;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}
+
+svg.gmap {
+	background-color: red;
+	width: auto;
+	top: auto;
+	bottom: auto;
+	left: auto;
+	right: auto;
+}
+
+.overlay {
+	/* for google map */
+	fill: none;
+	pointer-events: all;
+}
+
+#graticule {
+	fill: none;
+	stroke: gray;
+	stroke-width: 0.5px;
+	stroke-opacity: 0.5;
+}
+
+.boundary {
+	fill: silver;
+	stroke: gray;
+	stroke-width: 0.5px;
+	stroke-opacity: 1;
+}
+
+#states path {
+	fill: silver;
+	stroke-width: 0.5px;
+	stroke: gray;
+}
+
+#land path {
+	fill: rgb(143, 165, 129);
+	stroke-width: 0.5px;
+	stroke: gray;
+}
+
+#countries path {
+	fill: silver;
+	stroke: white;
+}
+
+/* TOOLTIP */
+
+#title {
+	font-size: 36pt;
+}
+
+#author {
+	font-size: 22pt;
+	letter-spacing: 1px;
+}
+
+hr {
+	border: 0;
+	border-bottom: 1px solid gray;
+}
+
+#options {
+font-size: 25px;
+
+}
+#potato {
+	position: absolute;
+	width: 100%;
+	height: 18%;
+	top: 0pt;
+}
+
+#slug{
+	position: absolute;
+	z-index: 1;
+	background-color: transparent;
+	font-size: 20pt;
+	top: 83%;
+	left: 68%;
+	width: 40px;
+	transform: rotate(55deg);
+}
+
+#SouthVietnam {
+position: absolute;
+z-index: 1;
+background-color: transparent;
+font-family: 'Karla', sans-serif;;
+font-size: 20pt;
+top: 70%;
+left: 20%;
+}
+
+#NorthVietnam{
+	position: absolute;
+	z-index: 1;
+	background-color: transparent;
+	font-family: 'Karla', sans-serif;;
+	font-size: 20pt;
+	top: 50%;
+	right: 20%;
+}
+
+#texts {
+	padding-top: 15pt;
+	padding-left: 55pt;
+	font-family: 'Karla', sans-serif;
+	text-align: left;
+	font-size: 12pt;
+	border-left: 1px solid gray;
+}
+
+#tooltip {
+	margin-top: 1em;
+	font-size: 10pt;
+}
+
+/* MISC INTERFACE */
+
+#finddata {
+	width: 250px;
+}
+
+/* a nifty little CSS animation that makes a big stroke become normal again */
+
+.selected {
+	stroke: red;
+	animation: selectanim 200ms ease;
+	stroke-width: 8px;
+}
+@keyframes selectanim {
+	from {
+		stroke-width: 500px;
+	}
+	to {
+		stroke-width: 4px;
+	}
+}
+
+/* text for the legend */
+#legend .label {
+	font-size: 10pt;
+	pointer-events: none; /* ignore mouse clicks */
+}
+
+/* this makes it so that whenever it zooms in, the strokes will not also scale as well */
+path,
+circle {
+	vector-effect: non-scaling-stroke;
+}
+
+/* text caption labels */
+.label {
+	opacity: 0.4;
+	font-size: 14pt;
+	pointer-events: none; /* ignore mouse clicks */
+}
+.label_point {
+	stroke: none;
+	pointer-events: none; /* ignore mouse clicks */
+}
+
+/* applied to data when mouse is over */
+.highlight {
+	stroke-width: 4px;
+	opacity: 1;
+}
+
+/* DATA STUFF */
+
+circle {
+	fill-opacity: 0.8;
+	stroke: white;
+	stroke-width: 1;
+	opacity: 0.5;
+}
+
+.data_visible {
+	opacity: 0.5;
+}
+
+.data_hidden {
+	display: none;
+}
+
+.data_has_keyword {
+	display: block;
+}
+
+.data_lacks_keyword {
+	display: none;
+}
+
+.data_in_range {
+	display: block;
+}
+
+.data_date_now {
+	opacity: 1;
+	visibility: visible;
+}
+
+.data_date_past {
+	opacity: 0.2;
+}
+
+.data_date_future {
+	visibility: hidden;
+}
+
+.data_out_range {
+	display: none;
+}
+
+.label_point {
+	display: none;
+}
+
+.label {
+	opacity: 0.5;
+	font-size: 14pt;
+}
+
+.heatmap_canvas {
+	position: relative;
+}
+
+.heatmapSVG {
+	pointer-events: none;
+}
+
+.heatmap {
+	visibility: hidden;
+	position: absolute !important;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+}
+
+.timeline_anim a {
+	text-decoration: none;
+}
+
+.timeline_slider {
+	width: 99%;
+	height: 5px;
+}
+
+/* applied to data when mouse is over */
+.mouseover {
+	stroke-width: 4px;
+	opacity: 1;
+}
+
+/* a nifty little CSS animation that makes a big stroke become normal again */
+.selected {
+	stroke: red;
+	animation: selectanim 200ms ease;
+	stroke-width: 8px;
+}
+@keyframes selectanim {
+	from {
+		stroke-width: 500px;
+	}
+	to {
+		stroke-width: 4px;
+	}
+}
+
+/* caption for the tooltip */
+#tooltip {
+	margin-top: 1em;
+	font-size: 10pt;
+}

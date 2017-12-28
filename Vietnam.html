@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Vietnam Air Missions</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<link rel="stylesheet" type="text/css" href="css.css"></link>
+	<link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+	<script src="http://vizsociety.net/shared/d3/d3.v3.min.js"></script>
+	<script src="http://vizsociety.net/shared/d3/topojson.v1.min.js"></script>
+	<script src="http://vizsociety.net/shared/d3/d3.geo.projection.v0.min.js"></script>
+	<script src="http://vizsociety.net/shared/js/jquery-1.10.2.js"></script>
+	<script src="http://vizsociety.net/shared/js/shared.js"></script>
+	<script src="./lib/d3viz.js"></script>
+
+	<script type="text/javascript">
+
+		var map = new d3SVGMap({
+			div: "#map",
+			width: window.innerWidth,
+			height: window.innerHeight,
+			mapfile: "Vietnam.json",
+			projection_name: "mercator",
+			projection_scale: 4600,
+			projection_translate: [-7900, -145],
+			projection_rotate: [0, 70, 0],
+
+			onload: function () {
+				map.tooltip = d3.select("#texts")
+					.append("div")
+					.attr("id", "tooltip")
+					.text("");
+			},
+
+			graticule_function: d3.geo.graticule(),
+
+		});
+
+		var debug = true; //turn this on if you want it to shoot messages to the console as it does stuff
+		var debug_verbose = false; //turn this on if you want a LOT of messages shot to the console
+
+
+		var VietnamData = new d3Data({
+			name: "Air Missions Over Vietnam",
+			csv: "VietnamOctober1965.csv",
+			latLon: function (d) { return [parseFloat(d["lat"]), parseFloat(d["lon"])] }
+		})
+			;
+	</script>
+	<script src="./lib/data_datacircles.js"></script>
+	<script src="./lib/filter_data.js"></script>
+	<script src="./lib/data_timeline.js"></script>
+	<script src="./lib/mouse_zoomer.js"></script>
+
+	<script type="text/javascript">
+		//begin main functions:
+
+		//initialization functions go here
+
+		//set up a color scale
+		var color_linear = d3.scale.linear()
+			.domain([0, .1, .2, .3]) //value points
+			.range(["white", "steelblue", "navy", "black"]); //colors that correspond with domain
+
+		var circles = new dataCircles({
+			map: map,
+			data: VietnamData,
+			color: "red", //just set the color for now
+			circle_class: "circledata",
+			radius: 4,
+			mouseover_caption: function(d) {
+					return "<b><big>"+d["missionfunction"] + "</big></b><br>"
+					+ "Target: "+d["target"]+"<br>"
+					+ "Aircraft Type: "+d["aircraft"] + "<br>"
+					+ "Number of Aircraft: "+d["numaircraft"]+"<br>"
+					+ "Time on Target: "+d["timeon"]+"<br>"
+					+ "Time off Target: "+d["timeoff"]+"<br>"
+					+ "Service: "+d["service"]+"<br>"
+					+ "Takeoff Location: "+d["location"]},
+		})
+
+		var keywords_filter = new dataFilter({
+
+			filter_type: FILTERTYPE_KEYWORDS,
+
+			//these options tell how the toggle menu should appear in the code
+			selector_caption: "Mission Type: ",
+			//the function will pass two variables. the first (t, below) is the formatted text to search for. the second (d, below) is the full data item.
+			//if the function returns true, it is marked as "found." if "false" then as "lacks."
+			selector_options: [
+				["All", 0], //returning 0 removes all filtering
+				["AIR REFUELING","AIR REFUELING"],
+				["AIRBORNE ALERT","AIRBORNE ALERT"],
+				["ARMED RECCE","ARMED RECCE"],
+				["BAS CMBT AIR PATROL","BAS CMBT AIR PATROL"],
+				["CLOSE AIR SUPPORT","CLOSE AIR SUPPORT"],
+				["DEF CMBT AIR PATROL","DEF CMBT AIR PATROL"],
+				["DIRECT AIR SUPPORT","DIRECT AIR SUPPORT"],
+				["ECCM","ECCM"],
+				["ECM","ECM"],
+				["ELINT","ELINT"],
+				["ESCORT/COVER","ESCORT/COVER"],
+				["FAC/TAC","FAC/TAC"],
+				["FLAK SUPPRESSION","FLAK SUPPRESSION"],
+				["FLARE DROP","FLARE DROP"],
+				["FLEET AREA RECCE","FLEET AREA RECCE"],
+				["HYDRO ACCOUST RECCE","HYDRO ACCOUST RECCE"],
+				["INFRA-RED RECCE","INFRA-RED RECCE"],
+				["LATE-LIGHT RECCE","LATE-LIGHT RECCE"],
+				["LOG CARGO CARRYING","LOG CARGO CARRYING"],
+				["MAINTENANCE","MAINTENANCE"],
+				["MIG CMBT AIR PATROL","MIG CMBT AIR PATROL"],
+				["MOTION PICTURE RECCE","MOTION PICTURE RECCE"],
+				["OPTICAL RECCE","OPTICAL RECCE"],
+				["PHOTO RECCE","PHOTO RECCE"],
+				["PSYCHOLOGIC WARFARE","PSYCHOLOGIC WARFARE"],
+				["RADAR RECCE","RADAR RECCE"],
+				["RADIO DIRECT FINDER","RADIO DIRECT FINDER"],
+				["RADIOMETER RECCE","RADIOMETER RECCE"],
+				["RES CMBT AIR PATROL","RES CMBT AIR PATROL"],
+				["SAR CMBT AIR PATROL","SAR CMBT AIR PATROL"],
+				["SEARCH/RESCUE","SEARCH/RESCUE"],
+				["SHIP_ CMBT AIR PATROL","SHIP_ CMBT AIR PATROL"],
+				["SLAR RECCE","SLAR RECCE"],
+				["STRIKE","STRIKE"],
+				["TAR CMBT AIR PATROL","TAR CMBT AIR PATROL"],
+				["TELEMETRY RECCE","TELEMETRY RECCE"],
+				["TELLERLIGHT RECCE","TELLERLIGHT RECCE"],
+				["ULTRA-VIOLET RECCE","ULTRA-VIOLET RECCE"],
+				["WEATHER RECCE","WEATHER RECCE"],
+
+			],
+			selector_selected: 0, //default option on list
+			selector_id: "options", //id of the HTML object you want to create the keyword filter select inside of
+			delimiter: " ", //character that splits fields up
+			filter_field: "missionfunction", //the field in the CSV file
+			case_insensitive: true, //will turn everything lowercase before comparing
+			found_class: "triangledata", //the class that is applied to the svg class if the text is found
+			lacks_class: "squaredata", //the class that is applied if it is not found (either can be blank)
+
+		})
+
+		var timeline = new Timeline({
+			map: map,
+			data: VietnamData,
+			startDate: [1965, 10, 1], //an array that says what day to start. Fields are (in order), YEAR, MONTH, DAY, HOUR, MINUTE, SECOND. If you don't want to track a given period of time, you can leave it out, or leave it as 0.
+			stopDate: [1965, 10, 31], //same as the above, but for the stop date.
+			dateTick: [0, 0, 1], //how much should each "tick" of the animation counter advance the date? Same format as above, so 0,0,1,0,0,0 would advance the timer one day per tick
+			//dateInfo: //important function! tells the script how to interpret the date. should take in whatever date field, return an array of [year,month,day]. If month/day don't matter, have them return 0,0
+			//the above is blocked out because for this mode, we will not be using a date field, but a date column
+			animatorAttachId: "options", //id of whatever element the play/pause/reset button should be attached to (if any)
+
+			onDateTick: function (currentDate) {
+				var dateFormatted = `${currentDate[1]}/${currentDate[2]}/${currentDate[0]}`
+				document.getElementById("date_status").innerHTML = `Currently Displayed Date: ${dateFormatted}`;
+
+				d3.selectAll(".circledata")
+					.classed("showcircle", function (d) {
+						return dateFormatted === d.date;
+					})
+			},
+
+			//svgElement: "#circles circle", //the svg element to toggle visibility classes on or off as it animates (optional! if you don't have one, though, you'd better have something happen in the onDateTick function or else it won't do anything interesting)
+			//sliderAttachId: "slider", //the id of the html element to attach a slider to, if you want one
+			loop: true, //makes the timeline loop forever...
+		});
+
+
+		var zoomer = new mouseZoomer({
+			map: map,
+			zoom_if_clicked: ["circle", "path"],
+			zoom_to_centroid: false,
+			zoom_transition_speed: 1000,
+		})
+
+		//startup (runs after all elements/scripts/etc. on the page have loaded)
+		function init() {
+
+			//do it! 			<div id="slider"></div>
+
+			d3VizObj.load();
+
+		}
+		window.onload = init;
+
+	</script>
+</head>
+
+<body>
+	<div id="map"></div>
+	<div>
+  <img id="slug" src="north.svg" />
+  </div>
+
+
+	<div id="potato">
+	<div id="texts">
+		<div id="title">U.S. AIR MISSIONS OVER VIETNAM*</div>
+		<div id="author">A day by day visualization of October 1965</div><br>
+		<div id="options">		</div>
+
+			<div id="date_status"></div>
+		<p>*Targets of opportunity not included</p>
+	</div>
+	</div>
+	<!-- <div id="SouthVietnam">South Vietnam</div> -->
+	<!-- <div id="NorthVietnam">North Vietnam</div> -->
+
+</body>
+
+</html>
